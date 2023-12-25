@@ -36,6 +36,7 @@ const Lipbody =() => {
 
 
       const handlefile = async () => {
+        setErrorMessage(null);
 
         console.log("video or image",file)
         console.log("audio",audio)
@@ -65,10 +66,15 @@ const Lipbody =() => {
 
                 console.log("backend response",response)
 
+            }else{
+                throw new Error("Please upload both audio and video files")
             }
              setLoading(false)
              console.log("this ran after res")
-             setVideoPath(`${HOST}/static/${response!.videoPath}`)
+            
+              
+              setVideoPath(`${HOST}/static/${response!.videoPath}`)
+             
              console.log("this is full url ",videoPath )
             
 
