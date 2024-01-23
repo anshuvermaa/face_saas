@@ -17,22 +17,7 @@ export const LandingNavbar = () => {
   console.log("first",auth)
   const { organizationList, isLoaded, setActive } = useOrganizationList();
 
-  useEffect(() => {
-    if (isLoaded) {
-      // Find the admin organization from the loaded organization list
-      const adminOrganization = organizationList.find(
-        (org) => org.membership.role === 'admin'
-      );
 
-      
-      // If the user is not an admin, redirect to the homepage
-      if (!adminOrganization || adminOrganization.membership.role !== 'admin') {
-        console.log("this is ",adminOrganization,"this second")
-        // router.push('/'); // Replace '/' with the homepage URL
-      } else {
-      }
-    }
-  }, [isLoaded, organizationList]);
 
   return (
     <nav className="p-4 bg-transparent flex items-center justify-between">
