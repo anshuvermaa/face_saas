@@ -11,7 +11,7 @@ export default  authMiddleware({
     }
     const session =await auth.sessionClaims
     if(!session){
-      return  NextResponse.redirect(new URL("/", req.url+ "user doesn't exist"))
+      return  NextResponse.json({error:"session not fount"})
     }
     // console.log("fuckning first",session.metadata.role)
     if (req.nextUrl.pathname.startsWith("/admin")) {
