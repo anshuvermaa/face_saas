@@ -1,17 +1,21 @@
-import React from 'react'
+import { UserButton } from "@clerk/nextjs";
 
-type Props = {}
+import { MobileSidebar } from "@/components/mobile-sidebar";
+import { getApiLimitCount } from "@/lib/api-limit";
+import { checkSubscription } from "@/lib/subscription";
 
 const Navbar = async () => {
-  return (
+  const apiLimitCount = await getApiLimitCount();
+  const isPro = await checkSubscription();
+
+  return ( 
     <div className="flex items-center p-4">
-      {/* <MobileSidebar /> */} mobile side
+      <MobileSidebar isPro={isPro} apiLimitCount={apiLimitCount} />
       <div className="flex w-full justify-end">
-        user profile
-        {/* <UserButton afterSignOutUrl="/" /> */}
+        <UserButton afterSignOutUrl="/" />
       </div>
     </div>
-  )
+   );
 }
-
-export default Navbar
+ 
+export default Navbar;

@@ -12,7 +12,7 @@ const Lipsync = (props: Props) => {
     
   return (
    <>
-   <div>
+   <div className='px-4 lg:px-8 '>
       <Heading
         title="lipsync"
         description="generate lipsynced video with AI."
