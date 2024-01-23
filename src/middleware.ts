@@ -2,14 +2,17 @@ import { auth,authMiddleware,currentUser, redirectToSignIn,clerkClient} from "@c
 import { NextRequest, NextResponse } from "next/server";
 
 
-export default authMiddleware({
+export default  authMiddleware({
   publicRoutes: ["/", "/contact","/api/clerk","/api/routes","/api/users"],
-   afterAuth(auth, req, evt) {
+  async afterAuth(auth, req, evt) {
     // console.log("fucking usr profile is ",auth.)
     if(!auth.userId && !auth.isPublicRoute){
       return redirectToSignIn({ returnBackUrl: req.url });
     }
-    const session =auth.sessionClaims
+    const session =await auth.sessionClaims
+    if(!session){
+      return  NextResponse.redirect(new URL("/", req.url+ "user doesn't exist"))
+    }
     // console.log("fuckning first",session.metadata.role)
     if (req.nextUrl.pathname.startsWith("/admin")) {
       if (session.metadata.role === "admin") {

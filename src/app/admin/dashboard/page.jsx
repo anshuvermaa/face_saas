@@ -53,7 +53,7 @@ const User = async () => {
           <p className='text-xl text-gray-600'>{user.emailAddresses[0].emailAddress}</p>
           <p className='text-lg text-indigo-500'>Role: Admin</p>
           <p className='mt-4 text-gray-700'>
-            all user's list is given below
+            all user&apos;s list is given below
           </p>
         </div>
 
