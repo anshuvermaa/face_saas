@@ -11,10 +11,11 @@ export default  authMiddleware({
     }
     try {
       const session =await auth.sessionClaims
+      console.dir(session,{depth:null})
       if(!session){
-        return  NextResponse.json({error:"session not fount"})
+        throw new Error("session not found")
       }
-      // console.log("fuckning first",session.metadata.role)
+      console.log("fuckning first",session)
       if (req.nextUrl.pathname.startsWith("/admin")) {
         if (session.metadata.role === "admin") {
           return NextResponse.next(); // Allow access to admin routes for admins
