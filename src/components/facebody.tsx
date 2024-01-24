@@ -3,6 +3,7 @@ import React from "react";
 import axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
+import { hostname } from "os";
 
 interface IData {
   url: string;
@@ -73,7 +74,15 @@ const Facebody = () => {
         throw new Error("Please upload both source and target files");
       }
       setLoading(false);
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error during merging:", error);
+      if ((error as any).response) {
+        setErrorMessage((error as any).response.data.error);
+      } else {
+        setErrorMessage((error as any).message);
+      }
+      setLoading(false);
+    }
   };
 
   if (content_type) {
@@ -83,7 +92,7 @@ const Facebody = () => {
   console.log("data is ", data);
 
   return (
-    <div>
+    <div className="h-full w-full">
       <div className="gap-2 grid sm:flex  justify-center ">
         <div className="flex items-center justify-center sm:w-[44%] w-full">
           <label
@@ -151,7 +160,7 @@ const Facebody = () => {
                 and drop
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                target target or image
+                target video or image
               </p>
             </div>
             <input
@@ -169,7 +178,7 @@ const Facebody = () => {
           className="relative flex ml-30   justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
         >
           <span className="px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-            {loading ? "Loading..." : "Generate"}
+            {loading ? "Generating..." : "Generate"}
           </span>
         </button>
       </div>
@@ -185,17 +194,20 @@ const Facebody = () => {
 }
 
 </div> */}
-      <div className="px-4 lg:px-8">
-        {content_type === "image" && data?.url && (
-          <img
-            className="w-full h-full"
-            src={data.url} // Assuming the file URL is available
+      <div className="px-4 lg:px-8 relative w-full h-[80vh]">
+        { content_type === "image" && data?.url &&
+          <Image 
+          className="w-full relative  object-contain"
+          layout="fill" objectFit="contain"
+            src={`http://localhost:8000/static/vinay_output.jpg`} // Assuming the file URL is available
             alt="Media content"
           />
-        )}
+          // <div> hwebghf bbhg nbbwhefg jhbhwjgef nbhwgef nbe bhebnb erh erhvbhfn g e </div>
+    
+        }
         {content_type === "video" && data?.url && (
           <video controls className="w-full h-full">
-            <source src={data.url} type={content_type} />
+            <source src={`${HOST}/static/${data?.url}`} type={content_type} />
             Your browser does not support the video tag.
           </video>
         )}

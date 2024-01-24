@@ -1,10 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-        domains: [
-          '127.0.0.1', // Add localhost to the list of domains
-        ],
-    },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '8000',
+      },
+    ],
+  },
 }
 
 module.exports = nextConfig
