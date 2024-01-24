@@ -199,7 +199,7 @@ const Facebody = () => {
           <Image 
           className="w-full relative  object-contain"
           layout="fill" objectFit="contain"
-            src={`http://localhost:8000/static/vinay_output.jpg`} // Assuming the file URL is available
+            src={`${HOST}/static/${data?.url}`} // Assuming the file URL is available
             alt="Media content"
           />
           // <div> hwebghf bbhg nbbwhefg jhbhwjgef nbhwgef nbe bhebnb erh erhvbhfn g e </div>
