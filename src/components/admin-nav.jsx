@@ -43,16 +43,16 @@ const ANavbar = () => {
         </nav>
         <div className='md:flex items-center'>
           <SignedOut>
-            <a href='/sign-in'>
+            <Link href='/sign-in'>
               <button className='text-white bg-indigo-500 border-0 py-2 px-4 focus:outline-none hover:bg-indigo-600 rounded text-base mr-4'>
                 Login
               </button>
-            </a>
-            <a href='/sign-up'>
+            </Link>
+            <Link href='/sign-up'>
               <button className='text-white bg-indigo-500 border-0 py-2 px-4 focus:outline-none hover:bg-indigo-600 rounded text-base'>
                 Sign Up
               </button>
-            </a>
+            </Link>
           </SignedOut>
           <SignedIn>
             <div className='ml-4'>
