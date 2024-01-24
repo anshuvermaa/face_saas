@@ -5,7 +5,7 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'devx.octrends.com',
-        port: 8000,
+        port: '8000',
       },
     ],
   },
