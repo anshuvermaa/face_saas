@@ -49,9 +49,7 @@ const Lipbody = () => {
         formData.append("video", file);
         formData.append("audio", audio);
 
-        response =await ActionLip(formData).then((res) => {
-          console.log("this is very simeple ",res)
-           return res}).catch((err) => {console.log("fucknibg eror s",err)});
+        response = await ActionLip(formData)
 
         console.log("backend response", response);
       } else {
