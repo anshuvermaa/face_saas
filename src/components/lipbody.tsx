@@ -3,6 +3,7 @@ import React from "react";
 import axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
+import { ActionLip } from "@/app/(dashboard)/(routes)/lipsync/action";
 
 const Lipbody = () => {
   const HOST = process.env.NEXT_PUBLIC_LIP_SERVER;
@@ -47,15 +48,10 @@ const Lipbody = () => {
         const formData = new FormData();
         formData.append("video", file);
         formData.append("audio", audio);
-        response = await axios
-          .post(HOST + "/api/files", formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          })
-          .then((res) => {
-            return res.data;
-          });
+
+        response =await ActionLip(formData).then((res) => {
+          console.log("this is very simeple ",res)
+           return res}).catch((err) => {console.log("fucknibg eror s",err)});
 
         console.log("backend response", response);
       } else {
