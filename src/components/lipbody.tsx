@@ -5,6 +5,10 @@ import Image from "next/image";
 import { useState } from "react";
 // import { ActionLip } from "@/app/(dashboard)/(routes)/lipsync/action";
 
+interface IResponse{
+  videoPath:string
+}
+
 const Lipbody = () => {
   const HOST = process.env.NEXT_PUBLIC_LIP_SERVER;
   console.log("host", HOST);
@@ -17,6 +21,7 @@ const Lipbody = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<any | null>(null);
   const [videoPath, setVideoPath] = useState("");
+  
 
   function handleChange1(event: any) {
     event.preventDefault();
@@ -50,7 +55,7 @@ const Lipbody = () => {
         formData.append("audio", audio);
 
         // response = await ActionLip(formData)
-        const  response = await axios
+          response = await axios
         .post(HOST + "/api/files", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -65,12 +70,13 @@ const Lipbody = () => {
 
   
 
-        console.log("backend response", response);
+        console.log("backend response", response.videoPath);
       } else {
         throw new Error("Please upload both audio and video files");
       }
       setLoading(false);
-      console.log("this ran after res");
+      console.log("this ran after res",response.videoPath);
+      console.log("this is full url scratch", `${HOST}/static/${response!.videoPath}`);
 
       setVideoPath(`${HOST}/static/${response!.videoPath}`);
 
