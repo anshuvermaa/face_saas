@@ -21,7 +21,7 @@ const Lipbody = () => {
   function handleChange1(event: any) {
     event.preventDefault();
     setAudio(event.target.files[0]);
-    console.log("file audio", audio);
+    console.log("file audio wa", audio);
   }
   function handleChange2(event: any) {
     event.preventDefault();

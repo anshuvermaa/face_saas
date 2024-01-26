@@ -20,9 +20,12 @@ const role=user?.publicMetadata.role
       <MobileSidebar isPro={isPro} apiLimitCount={apiLimitCount} />
       <div className="flex w-full justify-end">
         <div className="flex px-2 gap-4 justify-center items-center">
-          <Link href={"/admin/dashboard"}>
-            <div className="">admin</div>
-          </Link>
+          {role==="admin" && (
+            <Link href={"/admin/dashboard"}>
+              <div className="">admin</div>
+            </Link>
+          
+          )}
         <UserButton afterSignOutUrl="/" />
 
         </div>
