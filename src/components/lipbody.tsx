@@ -3,6 +3,7 @@ import React from "react";
 import axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
+import { ActionLip } from "@/app/(dashboard)/(routes)/lipsync/action";
 // import { ActionLip } from "@/app/(dashboard)/(routes)/lipsync/action";
 
 interface IResponse{
@@ -14,7 +15,7 @@ const Lipbody = () => {
   console.log("host", HOST);
 
   const [fileUrl, setFileUrl] = useState(null);
-  let response;
+  let response:IResponse;
   const [file, setFile] = useState(null);
   const [error, setError] = useState(null);
   const [audio, setAudio] = useState(null);
@@ -54,19 +55,7 @@ const Lipbody = () => {
         formData.append("video", file);
         formData.append("audio", audio);
 
-        // response = await ActionLip(formData)
-          response = await axios
-        .post(HOST + "/api/files", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          return res.data;
-        }).catch((err) => {
-          console.error("error", err);
-          return err;
-        });
+        response = await ActionLip(formData)
 
   
 

@@ -4,6 +4,7 @@ import axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
 import { hostname } from "os";
+import { ActionFace } from "@/app/(dashboard)/(routes)/faceswap/action";
 
 interface IData {
   url: string;
@@ -53,20 +54,16 @@ const Facebody = () => {
         const formData = new FormData();
         formData.append("target", file);
         formData.append("source", source);
-        const { data, content_type } = await axios
-          .post(HOST + "/api/files", formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          })
-          .then((res) => {
-            return {
-              data: res.data,
-              content_type: res.headers["content-type"].startsWith("video/")
-                ? "video"
-                : "image",
-            };
-          });
+
+        const response= await ActionFace(formData);
+
+        if(!response.data || !response){
+          throw new Error(`data doest exist ${response}`)
+        }
+        const {data,content_type}=response
+
+
+      
         setData(data);
 
         setContent_type(content_type);
