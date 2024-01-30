@@ -12,7 +12,7 @@ interface IResponse{
 
 const Lipbody = () => {
   const HOST = process.env.NEXT_PUBLIC_LIP_SERVER;
-  console.log("host", HOST);
+  // console.log("host", HOST);
 
   const [fileUrl, setFileUrl] = useState(null);
   let response:IResponse;

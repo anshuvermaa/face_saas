@@ -12,7 +12,7 @@ interface IData {
 
 const Facebody = () => {
   const HOST = process.env.NEXT_PUBLIC_FACE_SERVER;
-  console.log("host", HOST);
+  // console.log("host", HOST);
 
   const [data, setData] = useState<IData>();
   const [content_type, setContent_type] = useState<string | undefined>(
@@ -87,6 +87,8 @@ const Facebody = () => {
   }
 
   console.log("data is ", data);
+  console.log("content type is",content_type)
+  // console.log("full url is",`${HOST}/static/${data?.url}`)
 
   return (
     <div className="h-full w-full">
@@ -203,10 +205,9 @@ const Facebody = () => {
     
         }
         {content_type === "video" && data?.url && (
-          <video controls className="w-full h-full">
-            <source src={`${HOST}/static/${data?.url}`} type={content_type} />
-            Your browser does not support the video tag.
-          </video>
+          <div>
+          <iframe className="w-full h-full" src={`${HOST}/static/${data?.url}`}></iframe>
+          </div>
         )}
         {content_type === "unknown" && <p>File type is unknown.</p>}
       </div>
