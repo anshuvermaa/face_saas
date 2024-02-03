@@ -22,8 +22,8 @@ export const LandingNavbar = () => {
   return (
     <nav className="p-4 bg-transparent flex items-center justify-between">
       <Link href="/" className="flex items-center">
-        <div className="relative h-8 w-8 mr-4">
-          <Image fill alt="Logo" src="/logo.jpg" />
+        <div className="relative h-10 w-10 mr-4">
+          <Image className="rounded-md  " fill alt="Logo" src="/logo.jpg" />
         </div>
         <h1 className={cn("text-2xl font-bold text-white", font.className)}>
           Stable diffusion

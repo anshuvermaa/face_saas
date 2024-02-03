@@ -6,6 +6,7 @@ const DAY_IN_MS = 86_400_000;
 
 export const checkSubscription = async () => {
   const { userId } = auth();
+  console.log("userId is",userId)
 
   if (!userId) {
     return false;
@@ -22,6 +23,7 @@ export const checkSubscription = async () => {
       stripePriceId: true,
     },
   })
+  console.log("subscription is ",userSubscription)
 
   if (!userSubscription) {
     return false;
@@ -30,6 +32,8 @@ export const checkSubscription = async () => {
   const isValid =
     userSubscription.stripePriceId &&
     userSubscription.stripeCurrentPeriodEnd?.getTime()! + DAY_IN_MS > Date.now()
+
+    console.log("validity is",isValid)
 
   return !!isValid;
 };

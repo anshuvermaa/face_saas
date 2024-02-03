@@ -1,10 +1,12 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
+import Axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
-import { hostname } from "os";
 import { ActionFace } from "@/app/(dashboard)/(routes)/faceswap/action";
+import FileDownload from 'js-file-download'
+import { Loader2 } from "lucide-react";
 
 interface IData {
   url: string;
@@ -22,8 +24,14 @@ const Facebody = () => {
   const [error, setError] = useState(null);
   const [source, setSource] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loadingD, setLoadingD] = useState(false);
   const [errorMessage, setErrorMessage] = useState<any | null>(null);
 
+  
+
+
+useEffect(()=>{
+})
   function handleChange1(event: any) {
     event.preventDefault();
     setSource(event.target.files[0]);
@@ -57,7 +65,9 @@ const Facebody = () => {
 
         const response= await ActionFace(formData);
 
-        if(!response.data || !response){
+  
+
+        if(!response || !response.data ){
           throw new Error(`data doest exist ${response}`)
         }
         const {data,content_type}=response
@@ -82,6 +92,7 @@ const Facebody = () => {
     }
   };
 
+
   if (content_type) {
     content_type.startsWith("video/") ? "video" : "image";
   }
@@ -89,6 +100,35 @@ const Facebody = () => {
   console.log("data is ", data);
   console.log("content type is",content_type)
   // console.log("full url is",`${HOST}/static/${data?.url}`)
+
+
+
+
+  function handleDownload(e:any){
+    e.preventDefault();
+    try {
+      setLoadingD(true)
+      if(!data?.url){
+        throw new Error("download url doesn't exist")
+
+      }
+      const res= Axios({
+        url:`${HOST}/static/${data?.url}`,
+        method:"GET",
+        responseType:"blob"
+      }).then(res=>{
+        FileDownload(res.data,data?.url)
+      })
+    } catch (error:any){
+      setError(error)
+
+      
+    }
+    finally{
+      setLoadingD(false)
+
+    }
+  }
 
   return (
     <div className="h-full w-full">
@@ -174,10 +214,10 @@ const Facebody = () => {
       <div className="flex justify-center mt-4 ml-6 gap-y-4">
         <button
           onClick={handlefile}
-          className="relative flex ml-30   justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
+          className="relative flex ml-30  my-6  justify-center p-0.5  me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
         >
-          <span className="px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-            {loading ? "Generating..." : "Generate"}
+          <span className="px-5 h-[40px] w-[101px] flex justify-center items-center py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+            {loading ? <Loader2 className=" text-blue-500 animate-spin" /> : "Generate"}
           </span>
         </button>
       </div>
@@ -193,12 +233,13 @@ const Facebody = () => {
 }
 
 </div> */}
-      <div className="px-4 lg:px-8 relative w-full h-[80vh]">
-        { content_type === "image" && data?.url &&
-          <Image 
-          className="w-full relative  object-contain"
-          layout="fill" objectFit="contain"
-            src={`${HOST}/static/${data?.url}`} // Assuming the file URL is available
+      <div className="px-4 lg:px-8 relative w-full h-full flex flex-col justify-center ">
+        {          <Image 
+          className=" relative w-full h-full"
+
+          width={1084}
+          height={1084}
+            src={`http://devx.octrends.com:8000/static/face4_output.PNG`} // Assuming the file URL is available
             alt="Media content"
           />
           // <div> hwebghf bbhg nbbwhefg jhbhwjgef nbhwgef nbe bhebnb erh erhvbhfn g e </div>
@@ -206,10 +247,32 @@ const Facebody = () => {
         }
         {content_type === "video" && data?.url && (
           <div>
-          <iframe className="w-full h-full" src={`${HOST}/static/${data?.url}`}></iframe>
+          <iframe className="w-full h-[100vh]" src={`${HOST}/static/${data?.url}`}></iframe>
           </div>
         )}
+      
         {content_type === "unknown" && <p>File type is unknown.</p>}
+      </div>
+      <div className="flex justify-center p-6">
+      {
+        data?.url && (content_type !== "unknown") && 
+          <>
+          <button
+          onClick={handleDownload}
+          className="flex ml-30   justify-center items-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
+        >
+          <span className="px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0" >
+          {loadingD ? "Downloading..." : "Download"}
+          </span>
+        </button>
+        {error && (
+        <div className="text-red-500 flex justify-center">
+          {error} : Try again
+        </div>
+      )}
+
+        </>
+      }
       </div>
     </div>
   );

@@ -59,6 +59,7 @@ export async function GET() {
       },
     })
     if(stripeSession.status==="open"){
+    
       
       await clerkClient.users.updateUserMetadata(userId, {
         publicMetadata: {

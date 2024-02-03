@@ -1,9 +1,11 @@
 "use client";
 import React from "react";
-import axios from "axios";
+import Axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
 import { ActionLip } from "@/app/(dashboard)/(routes)/lipsync/action";
+import fileDownload from "js-file-download";
+import { Loader2 } from "lucide-react";
 // import { ActionLip } from "@/app/(dashboard)/(routes)/lipsync/action";
 
 interface IResponse{
@@ -20,8 +22,10 @@ const Lipbody = () => {
   const [error, setError] = useState(null);
   const [audio, setAudio] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loadingD, setLoadingD] = useState(false);
   const [errorMessage, setErrorMessage] = useState<any | null>(null);
   const [videoPath, setVideoPath] = useState("");
+  const [videoName, setVideoName] = useState("");
   
 
   function handleChange1(event: any) {
@@ -66,6 +70,7 @@ const Lipbody = () => {
       setLoading(false);
       console.log("this ran after res",response.videoPath);
       console.log("this is full url scratch", `${HOST}/static/${response!.videoPath}`);
+      setVideoName(response.videoPath)
 
       setVideoPath(`${HOST}/static/${response!.videoPath}`);
 
@@ -75,11 +80,40 @@ const Lipbody = () => {
       if ((error as any).response) {
         setErrorMessage((error as any).response.data.error);
       } else {
-        setErrorMessage((error as any).message);
+        console.log("error massege is ",error)
+        setErrorMessage(error);
       }
       setLoading(false);
     }
   };
+
+  function handleDownload(e:any){
+    e.preventDefault();
+    try {
+      setLoadingD(true)
+      if(!videoPath){
+        throw new Error("download url doesn't exist")
+
+      }
+      const res= Axios({
+        url:`${videoPath}`,
+        method:"GET",
+        responseType:"blob"
+      }).then(res=>{
+        console.log("here fucking response is ",response)
+        console.log("here fucking res is ",res.data)
+        fileDownload(res.data,videoName)
+      })
+    } catch (error:any){
+      setError(error)
+
+      
+    }
+    finally{
+      setLoadingD(false)
+
+    }
+  }
 
   return (
     <div>
@@ -167,14 +201,14 @@ const Lipbody = () => {
           onClick={handlefile}
           className="relative flex ml-30   justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
         >
-          <span className="px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-            {loading ? "Generating..." : "Generate"}
+          <span className="px-5 h-[40px] w-[101px] flex justify-center items-center py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+            {loading ? <Loader2 className=" text-blue-500 animate-spin" /> : "Generate"}
           </span>
         </button>
       </div>
       {errorMessage && (
         <div className="text-red-500 flex justify-center">
-          {errorMessage} : Try again
+          {errorMessage.toString()} : Try again
         </div>
       )}
       <div className="p-4">
@@ -185,6 +219,26 @@ const Lipbody = () => {
             src={videoPath}
           ></iframe>
         )}
+      </div>
+      <div className="flex justify-center p-6">
+      {
+        videoPath &&           <>
+          <button
+          onClick={handleDownload}
+          className="flex ml-30   justify-center items-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
+        >
+          <span className="px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0" >
+          {loadingD ? "Downloading..." : "Download"}
+          </span>
+        </button>
+        {error && (
+        <div className="text-red-500 flex justify-center">
+          {error} : Try again
+        </div>
+      )}
+
+        </>
+      }
       </div>
     </div>
   );

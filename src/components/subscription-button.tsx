@@ -12,6 +12,7 @@ export const SubscriptionButton = ({
 }: {
   isPro: boolean;
 }) => {
+  console.log("this is fucking ",isPro)
   const [loading, setLoading] = useState(false);
 
   const onClick = async () => {

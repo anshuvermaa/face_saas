@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 export default  authMiddleware({
-  publicRoutes: ["/", "/contact","/api/clerk","/api/routes","/api/users"],
+  publicRoutes: ["/", "/contact","/api/clerk","/api/routes","/api/users","/api/webhook"],
   async afterAuth(auth, req, evt) {
     // console.log("fucking usr profile is ",auth.)
     if(!auth.userId && !auth.isPublicRoute){

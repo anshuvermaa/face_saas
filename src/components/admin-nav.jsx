@@ -9,8 +9,8 @@ const ANavbar = () => {
   const { session } = useSession();
 
   const links = [
-    { title: 'Profile', url: 'admin/profile' },
-    { title: 'Dashboard', url: 'admin/dashboard' },
+    { title: 'Profile', url: 'profile' },
+    { title: 'Dashboard', url: 'dashboard' },
     // Add more placeholder links as needed
   ];
 

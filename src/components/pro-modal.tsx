@@ -28,10 +28,13 @@ export const ProModal = () => {
     console.log("onSubscribe");
     try {
       setLoading(true);
+      console.log("response is a last")
       const response = await axios.get("/api/stripe");
+      console.log("response is ",response)
 
       window.location.href = response.data.url;
     } catch (error) {
+      console.log("error is",error)
       toast.error("Something went wrong");
     } finally {
       setLoading(false);
