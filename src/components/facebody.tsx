@@ -226,20 +226,14 @@ useEffect(()=>{
           {errorMessage} : Try again
         </div>
       )}
-      {/* <div className='p-4'>
-{
- videoPath && <iframe allowFullScreen={true} className='h-[100vh] w-full' src={videoPath}></iframe>
-
-}
-
-</div> */}
-      <div className="px-4 lg:px-8 relative w-full h-full flex flex-col justify-center ">
-        {          <Image 
+   
+      <div className="px-4 lg:px-8 relative w-full  sm:w-[50%] h-full flex mx-auto justify-center ">
+        { content_type === "image" && data?.url &&          <Image 
           className=" relative w-full h-full"
 
           width={1084}
           height={1084}
-            src={`http://devx.octrends.com:8000/static/face4_output.PNG`} // Assuming the file URL is available
+            src={`${HOST}/static/${data?.url}`} // Assuming the file URL is available
             alt="Media content"
           />
           // <div> hwebghf bbhg nbbwhefg jhbhwjgef nbhwgef nbe bhebnb erh erhvbhfn g e </div>
