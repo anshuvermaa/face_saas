@@ -3,14 +3,14 @@ import { auth } from "@clerk/nextjs";
 import prismadb from "@/lib/prismadb";
 import { stripe } from "./stripe";
 
-export async function getUserSubscriptionPlan() {
-     const { userId } = auth();
-
+export async function getUserSubscriptionPlan({Id}:{Id:string}) {
+  const {userId}=await auth()
+ console.log("debug",userId," id ",Id)
      if (!userId) {
         throw new Error("User not found.");
      }
 
-
+ console.log("debug 2",userId);
 
   const user = await prismadb.userSubscription.findUnique({
     where: {
@@ -24,7 +24,7 @@ export async function getUserSubscriptionPlan() {
     },
   })
   if (!user) {
-    throw new Error("User not found.");
+    throw new Error("User subscription not found.");
   }
 
   const isSubscribed =

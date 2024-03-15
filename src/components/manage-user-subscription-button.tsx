@@ -49,7 +49,7 @@ export function ManageUserSubscriptionButton({
           window.location.href = session.url ?? "/dashboard/billing";
         }
       } catch (err) {
-        console.error((err as Error).message);
+        console.error("error fuck",(err as Error).message);
           toast.error("Something went wrong");
       }
     });

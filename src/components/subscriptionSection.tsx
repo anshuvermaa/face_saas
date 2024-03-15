@@ -1,7 +1,7 @@
 import { storeSubscriptionPlans } from "@/config/subscriptions";
 import { ManageUserSubscriptionButton } from "./manage-user-subscription-button";
 import { getUserSubscriptionPlan } from "@/lib/getSubscription";
-import { auth, currentUser } from "@clerk/nextjs";
+import {  currentUser } from "@clerk/nextjs";
 
 
 let subscriptionPlan:any
@@ -18,9 +18,11 @@ export default async function SubscriptionSection(){
     throw Error("user is not valid")
   }
 
+  console.log("user fuck",user.id)
+
   try {
 
-    subscriptionPlan = await getUserSubscriptionPlan();
+    subscriptionPlan = await getUserSubscriptionPlan(user.id);
     
   } catch (error) {
     console.log("fck",error)
