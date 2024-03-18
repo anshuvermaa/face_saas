@@ -79,7 +79,7 @@ export async function POST(req: Request) {
     }
 
   }
-  if (event.type === "payment_intent.succeeded") {
+  if (event.type === "charge.succeeded") {
     if (!session?.metadata?.userId) {
       return new NextResponse("User id is required", { status: 400 });
     }

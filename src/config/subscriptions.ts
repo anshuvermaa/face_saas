@@ -34,7 +34,7 @@ export const storeSubscriptionPlans: SubscriptionPlan[] = [
   },
   {
     id: "SingleSpend",
-    name: "SingleSpend",
+    name: "AI Tokens",
     tokens: 25,
     stripePriceId: process.env.NEXT_PUBLIC_STRIPE_ONETIME_PRICE_ID ?? "",
     price: 1.95,

@@ -66,7 +66,6 @@ export const manageStripeSubscriptionAction = async ({
        const stripeSession = await stripe.checkout.sessions.create({
          success_url: billingUrl,
          cancel_url: billingUrl,
-         payment_method_types: ["card"],
          mode:"payment",
          customer_email: email,
          line_items: [

@@ -3,14 +3,15 @@ import { getCount, getUsers } from './actions';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Item } from '@radix-ui/react-select';
+import { clerkClient } from '@clerk/nextjs/server';
 
 const User = async () => {
-  const usersList =await getUsers()
+
+    const  usersList = await clerkClient.users.getUserList();
+  // const =await getUsers()
   const { userId } = auth();
   // const count=countType(usersList)
 

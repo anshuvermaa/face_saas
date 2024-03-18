@@ -1,4 +1,5 @@
 import { checkRole } from "@/lib/role";
+import { clerkClient } from "@clerk/nextjs/server";
 import axios from "axios";
 
 export async function getUsers() {
@@ -23,11 +24,15 @@ export async function getUsers() {
 
 export async function getCount() {
 
-  const usersList = await getUsers();
-   let silver = 0;
-   let gold = 0;
-   let Platinum = 0;
-   let free = 0;
+  let silver = 0;
+  let gold = 0;
+  let Platinum = 0;
+  let free = 0;
+  
+  
+    const usersList  = await clerkClient.users.getUserList();
+  // const = await getUsers();
+  console.log("fuck it",usersList)
 
    usersList.forEach((user) => {
      switch (user.publicMetadata.plan) {
