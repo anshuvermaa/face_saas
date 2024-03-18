@@ -75,10 +75,8 @@ export const manageStripeSubscriptionAction = async ({
            },
          ],
          metadata: {
-           userId: userId,
-           plan: plan,
-           limit: limit,
-           type: "one time",
+           "limit": limit,
+           "type": "one time",
          },
        });
 

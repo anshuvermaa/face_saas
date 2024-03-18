@@ -1,12 +1,11 @@
 import Stripe from "stripe"
 import { headers } from "next/headers"
 import { NextResponse } from "next/server"
-import { auth, clerkClient, currentUser } from "@clerk/nextjs";
+import {clerkClient} from "@clerk/nextjs";
 
 
 import prismadb from "@/lib/prismadb"
 import { stripe } from "@/lib/stripe"
-import { getPlan } from "@/lib/plan";
 
 export async function POST(req: Request) {
   const body = await req.text()
@@ -27,13 +26,13 @@ export async function POST(req: Request) {
   const session = event.data.object as Stripe.Checkout.Session
 
   if (event.type === "checkout.session.completed") {
-    const subscription = await stripe.subscriptions.retrieve(
-      session.subscription as string
-    )
     if (!session?.metadata?.userId) {
       return new NextResponse("User id is required", { status: 400 });
     }
     if (session?.metadata?.type === "subscription") {
+      const subscription = await stripe.subscriptions.retrieve(
+        session.subscription as string
+      )
       await prismadb.userSubscription.create({
         data: {
           userId: session?.metadata?.userId,
@@ -76,34 +75,33 @@ export async function POST(req: Request) {
           },
         }
       );
-    }
-
-  }
-  if (event.type === "charge.succeeded") {
-    if (!session?.metadata?.userId) {
-      return new NextResponse("User id is required", { status: 400 });
-    }
-    const userApiLimit = await prismadb.userApiLimit.findUnique({
-      where: { userId: session?.metadata?.userId },
-    });
-
-    if (userApiLimit) {
-      await prismadb.userApiLimit.update({
+    }else{
+      if (!session?.metadata?.userId) {
+        return new NextResponse("User id is required", { status: 400 });
+      }
+      const userApiLimit = await prismadb.userApiLimit.findUnique({
         where: { userId: session?.metadata?.userId },
-        data: {
-          limit: userApiLimit.limit + Number(session?.metadata?.limit),
-          count: 0,
-        },
       });
-    } else {
-      await prismadb.userApiLimit.create({
-        data: {
-          userId: session?.metadata?.userId,
-          limit: Number(session?.metadata?.limit),
-        },
-      });
+
+      if (userApiLimit) {
+        await prismadb.userApiLimit.update({
+          where: { userId: session?.metadata?.userId },
+          data: {
+            limit: userApiLimit.limit + Number(session?.metadata?.limit),
+          },
+        });
+      } else {
+        await prismadb.userApiLimit.create({
+          data: {
+            userId: session?.metadata?.userId,
+            limit: Number(session?.metadata?.limit),
+          },
+        });
+      }
     }
+
   }
+ 
     if (event.type === "invoice.payment_succeeded") {
       const subscription = await stripe.subscriptions.retrieve(
         session.subscription as string
