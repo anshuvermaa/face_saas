@@ -10,7 +10,7 @@ const LandingPlan=()=>{
               Our Plans
             </h2>
           </div>
-          <div className="flex flex-col gap-12 md:flex-row space-x-0 md:space-x-8 space-y-12  md:space-y-0 justify-center items-center mb-[100px]">
+          <div className="flex flex-col gap-12 md:flex-row flex-wrap space-x-0 md:space-x-8 space-y-12  md:space-y-0 justify-center items-center mb-[100px]">
             {storeSubscriptionPlans.map((plan) => (
               <div
                 key={plan.id}
@@ -29,14 +29,17 @@ const LandingPlan=()=>{
                     <span className="font-bold text-base">
                       $ {plan.price},-
                     </span>
-                    <span className="font-light text-sm">/month</span>
+                    <span className="font-light text-sm">
+                      {plan.isSubscription ? "/month" : "/one time"}
+                    </span>
                   </div>
 
-                    <button className="bg-[#cbcedb] px-4 py-3 rounded-full  border border-[#F0F0F6] shadow-xl mt-4">
-                  <Link href={`${URL}/settings`}>
-                      Subscribe Plan
-                  </Link>
-                    </button>
+                  <button className="bg-[#cbcedb] px-4 py-3 rounded-full  border border-[#F0F0F6] shadow-xl mt-4">
+                    <Link href={`${URL}/settings`}>
+                      {plan.isSubscription ? "Subscribe Plan" : "one time"}
+                      
+                    </Link>
+                  </button>
                 </div>
               </div>
             ))}
