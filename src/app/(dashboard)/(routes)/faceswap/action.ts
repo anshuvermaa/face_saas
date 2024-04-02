@@ -1,8 +1,6 @@
 "use server";
 import { checkApiLimit, incrementApiLimit } from "@/lib/api-limit";
-import { checkSubscription } from "@/lib/subscription";
 import axios from "axios";
-import { NextResponse } from "next/server";
 
 export async function ActionFace(formData:any){
     const HOST = process.env.NEXT_PUBLIC_FACE_SERVER;
@@ -46,3 +44,4 @@ export async function ActionFace(formData:any){
     }
 
 }
+

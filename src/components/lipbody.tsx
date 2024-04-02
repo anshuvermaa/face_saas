@@ -1,11 +1,13 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Axios from "axios";
 import { useState } from "react";
 import { ActionLip } from "@/app/(dashboard)/(routes)/lipsync/action";
 import fileDownload from "js-file-download";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import { createFaceData } from "@/app/_actions/generateDataAction";
+import { date } from "zod";
 // import { ActionLip } from "@/app/(dashboard)/(routes)/lipsync/action";
 
 interface IResponse{
@@ -19,14 +21,31 @@ const Lipbody = () => {
 
   const [fileUrl, setFileUrl] = useState(null);
   let response:IResponse;
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState<any>(null);
   const [error, setError] = useState(null);
-  const [audio, setAudio] = useState(null);
+  const [audio, setAudio] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [loadingD, setLoadingD] = useState(false);
   const [errorMessage, setErrorMessage] = useState<any | null>(null);
   const [videoPath, setVideoPath] = useState("");
   const [videoName, setVideoName] = useState("");
+  const [progressTimer, setProgressTimer] = useState(0);
+  const [totalTimeElapsed, setTotalTimeElapsed] = useState<number | null>(null);
+
+  useEffect(() => {
+    let timer:any;
+    if (loading) {
+      timer = setInterval(() => {
+        setProgressTimer(prevTime => prevTime + 1);
+      }, 1000);
+    } else {
+      clearInterval(timer);
+    }
+  
+    return () => clearInterval(timer);
+  }, [loading]);
+  
+  
   
 
   function handleChange1(event: any) {
@@ -48,8 +67,10 @@ const Lipbody = () => {
       formData.append("video", file);
     }
 
+    setLoading(true);
+    setTotalTimeElapsed(null)
+    const startTime = Date.now();
     try {
-      setLoading(true);
       if (file && audio) {
         const formData = new FormData();
         formData.append("video", file);
@@ -61,19 +82,27 @@ const Lipbody = () => {
             toast.error(response.error);
             throw new Error(response.error)
           }
-
-
-  
-
+          const endTime = Date.now();
+          const elapsedTime = endTime - startTime;
+          setTotalTimeElapsed(elapsedTime);
+        await createFaceData({
+          type: "lip",
+          url: response.videoPath,
+          contentType: "video",
+          timeTaken: elapsedTime,
+        })
       } else {
         throw new Error("Please upload both audio and video files");
       }
       setLoading(false);
       setVideoName(response.videoPath)
-
+      
       setVideoPath(`${HOST}/static/${response!.videoPath}`);
-
+      
     } catch (error) {
+      const endTime = Date.now();
+      const elapsedTime = endTime - startTime;
+      setTotalTimeElapsed(elapsedTime);
       console.error("Error during merging:", error);
       if ((error as any).response) {
         setErrorMessage((error as any).response.data.error);
@@ -82,6 +111,11 @@ const Lipbody = () => {
         setErrorMessage(error);
       }
       setLoading(false);
+    }finally{
+      setLoading(false);
+      setProgressTimer(0)
+
+
     }
   };
 
@@ -102,8 +136,6 @@ const Lipbody = () => {
       })
     } catch (error:any){
       setError(error)
-
-      
     }
     finally{
       setLoadingD(false)
@@ -143,6 +175,9 @@ const Lipbody = () => {
                 {/* JPG (MAX. 800x400px) */}
                 audio in wav formate
               </p>
+              <div className="text-lg font-medium">
+                {audio?.name}
+              </div>
             </div>
             <input
               id="dropzone-file1"
@@ -182,6 +217,10 @@ const Lipbody = () => {
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 image or mp4 video
               </p>
+              <div className="text-lg font-medium">
+                {file?.name}
+              </div>
+
             </div>
             <input
               id="dropzone-file2"
@@ -192,7 +231,7 @@ const Lipbody = () => {
           </label>
         </div>
       </div>
-      <div className="flex justify-center mt-4 ml-6 gap-y-3">
+      <div className="flex flex-col justify-center items-center mt-4 ml-6">
         <button
           onClick={handlefile}
           className="relative flex ml-30   justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
@@ -201,6 +240,14 @@ const Lipbody = () => {
             {loading ? <Loader2 className=" text-blue-500 animate-spin" /> : "Generate"}
           </span>
         </button>
+        <div className="py-5">
+        {loading && (
+        <p>Progress: {progressTimer} seconds</p>
+      )}
+      {totalTimeElapsed !== null && (
+        <p>Total time taken: {Math.round(totalTimeElapsed / 1000)} seconds</p>
+      )}
+        </div>
       </div>
       {errorMessage && (
         <div className="text-red-500 flex justify-center">

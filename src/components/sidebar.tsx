@@ -6,6 +6,7 @@ import { Montserrat } from "next/font/google";
 import { FreeCounter } from "@/components/free-counter";
 import {
   ArrowLeftRight,
+  FolderDot,
   ImageIcon,
   LayoutDashboard,
   MessageSquare,
@@ -53,6 +54,13 @@ const routes = [
     color: "text-green-700",
     bgColor: "bg-green-700/10",
     href: "/faceswap",
+  },
+  {
+    label: 'Gallery',
+    icon: FolderDot,
+    color: "text-red-700",
+    bgColor: "bg-slate-700/10",
+    href: '/gallery',
   },
   {
     label: "Settings",

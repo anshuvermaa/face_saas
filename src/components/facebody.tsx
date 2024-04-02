@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect } from "react";
-import axios from "axios";
 import Axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
@@ -8,10 +7,12 @@ import { ActionFace } from "@/app/(dashboard)/(routes)/faceswap/action";
 import FileDownload from 'js-file-download'
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import { createFaceData } from "@/app/_actions/generateDataAction";
 
 interface IData {
   url: string;
 }
+
 
 const Facebody = () => {
   const HOST = process.env.NEXT_PUBLIC_FACE_SERVER;
@@ -20,18 +21,36 @@ const Facebody = () => {
   const [content_type, setContent_type] = useState<string | undefined>(
     undefined
   );
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState<any>(null);
   const [error, setError] = useState(null);
-  const [source, setSource] = useState(null);
+  const [source, setSource] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [loadingD, setLoadingD] = useState(false);
   const [errorMessage, setErrorMessage] = useState<any | null>(null);
+  const [progressTimer, setProgressTimer] = useState(0);
+  const [totalTimeElapsed, setTotalTimeElapsed] = useState<number | null>(null);
 
   
 
 
 useEffect(()=>{
-})
+  console.log("source",source,file)
+},[source,file])
+
+useEffect(() => {
+  let timer:any;
+  if (loading) {
+    timer = setInterval(() => {
+      setProgressTimer(prevTime => prevTime + 1);
+    }, 1000);
+  } else {
+    clearInterval(timer);
+  }
+
+  return () => clearInterval(timer);
+}, [loading]);
+
+
   function handleChange1(event: any) {
     event.preventDefault();
     setSource(event.target.files[0]);
@@ -42,6 +61,7 @@ useEffect(()=>{
   }
 
   const handlefile = async () => {
+    setTotalTimeElapsed(null)
     setErrorMessage(null);
 
 
@@ -51,8 +71,9 @@ useEffect(()=>{
       formData.append("target", file);
     }
 
+    setLoading(true);
+    const startTime = Date.now();
     try {
-      setLoading(true);
       if (file && source) {
         const formData = new FormData();
         formData.append("target", file);
@@ -71,24 +92,35 @@ useEffect(()=>{
           throw new Error(`data doest exist ${response}`)
         }
         const {data,content_type}=response
+        const endTime = Date.now();
+        const elapsedTime = endTime - startTime;
+        setTotalTimeElapsed(elapsedTime);
 
-
-      
+        await createFaceData({
+          type: "face",
+          url: data?.url,
+          contentType:content_type,
+          timeTaken: elapsedTime,
+        })
         setData(data);
 
         setContent_type(content_type);
       } else {
         throw new Error("Please upload both source and target files");
       }
-      setLoading(false);
     } catch (error) {
+      const endTime = Date.now();
+      const elapsedTime = endTime - startTime;
+      setTotalTimeElapsed(elapsedTime);
       console.error("Error during merging:", error);
       if ((error as any).response) {
         setErrorMessage((error as any).response.data.error);
       } else {
         setErrorMessage((error as any).message);
       }
+    }finally{
       setLoading(false);
+      setProgressTimer(0)
     }
   };
 
@@ -129,7 +161,7 @@ useEffect(()=>{
         <div className="flex items-center justify-center sm:w-[44%] w-full">
           <label
             htmlFor="dropzone-file1"
-            className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+            className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 px-3"
           >
             <div className="flex flex-col items-center justify-center pt-5 pb-6 px-2">
               <svg
@@ -155,6 +187,9 @@ useEffect(()=>{
                 {/* JPG (MAX. 800x400px) */}
                 source image
               </p>
+              <div className="text-lg font-medium flex flex-wrap">
+                {source?.name}
+              </div>
             </div>
             <input
               id="dropzone-file1"
@@ -194,6 +229,9 @@ useEffect(()=>{
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 target video or image
               </p>
+              <div className="text-lg font-medium">
+                {file?.name}
+              </div>
             </div>
             <input
               id="dropzone-file2"
@@ -204,15 +242,24 @@ useEffect(()=>{
           </label>
         </div>
       </div>
-      <div className="flex justify-center mt-4 ml-6 gap-y-4">
+      <div className="flex flex-col justify-center items-center mt-4 ml-6">
         <button
           onClick={handlefile}
-          className="relative flex ml-30  my-6  justify-center p-0.5  me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
+          className="relative max-w-min flex ml-30  my-6  justify-center p-0.5  me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
         >
           <span className="px-5 h-[40px] w-[101px] flex justify-center items-center py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
             {loading ? <Loader2 className=" text-blue-500 animate-spin" /> : "Generate"}
           </span>
         </button>
+        <div className="py-5">
+        {loading && (
+        <p>Progress: {progressTimer} seconds</p>
+      )}
+      {totalTimeElapsed !== null && (
+        <p>Total time taken: {Math.round(totalTimeElapsed / 1000)} seconds</p>
+      )}
+        </div>
+        
       </div>
       {errorMessage && (
         <div className="text-red-500 flex justify-center">

@@ -1,4 +1,4 @@
-import { Code, ImageIcon, MessageSquare, ArrowLeftRight, VideoIcon } from "lucide-react";
+import { Code, ImageIcon, MessageSquare,FolderDot, ArrowLeftRight, VideoIcon } from "lucide-react";
 
 export const MAX_FREE_COUNTS = 5;
 
@@ -26,10 +26,17 @@ export const tools = [
     href: '/lipsync',
   },
   {
+    label: 'Gallery',
+    icon: FolderDot,
+    color: "text-red-700",
+    bgColor: "bg-slate-700/10",
+    href: '/gallery',
+  },
+  {
     label: 'faceswap',
     icon: ArrowLeftRight,
     color: "text-green-700",
-    bgColor: "bg-green-700/10",
+    bgColor: "bg-green-600/10",
     href: '/faceswap',
   },
 ];
